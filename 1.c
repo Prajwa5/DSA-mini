@@ -65,3 +65,59 @@ void DeleteEvent(QUEUE *pq, char *event, int *min,int *sec,int *hour )
 	
 	free(p);
 }
+
+void ListEvents(QUEUE *pq) {
+    NODE *current = pq->head;
+
+    if (current == NULL) {
+        printf("Event list is empty.\n");
+        return;
+    }
+
+    printf("List of Events:\n");
+    while (current != NULL) {
+        printf("Event: %c\n", current->info);
+        printf("Time: %02d:%02d:%02d\n", current->priHour, current->priMin, current->priSec);
+        current = current->next;
+    }
+}
+
+void EditEvent(QUEUE *pq, char oldEvent, char newEvent, int newMin, int newSec, int newHour) {
+    NODE *current = pq->head;
+
+    while (current != NULL) {
+        if (current->info == oldEvent) {
+            current->info = newEvent;
+            current->priHour = newHour;
+            current->priMin = newMin;
+            current->priSec = newSec;
+            break;
+        }
+        current = current->next;
+    }
+}
+
+//Client code subjected to changes
+int main() {
+    QUEUE eventQueue;
+    initList(&eventQueue);
+
+    
+    AddEvent(&eventQueue, 'A', 10, 15, 9);
+    AddEvent(&eventQueue, 'B', 30, 45, 11);
+    AddEvent(&eventQueue, 'C', 20, 0, 10);
+
+    
+    ListEvents(&eventQueue);
+
+    
+    EditEvent(&eventQueue, 'B', 'X', 35, 50, 11);
+
+    
+    ListEvents(&eventQueue);
+
+    
+
+    return 0;
+}
+
