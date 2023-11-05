@@ -15,10 +15,17 @@ typedef struct queue
 	NODE *head;
 }QUEUE;
 
+typedef struct {
+    int taskId;
+    char taskName[50];
+    int interval; // interval in seconds
+    int lastExecuted; // last execution time in seconds
+} Task;
+
 void initList(QUEUE *pq);
 void AddEvent(QUEUE *pq,char event, int min,int sec,int hour);
 void DeleteEvent(QUEUE *pq,char *event, int *min,int *sec,int *hour);
-
+void sendReminders(Task tasks[], int numTasks, int currentTime);
 
 void initList(QUEUE *pq)
 {
@@ -97,6 +104,14 @@ void EditEvent(QUEUE *pq, char oldEvent, char newEvent, int newMin, int newSec, 
     }
 }
 
+void sendReminders(Task tasks[], int numTasks, int currentTime) {
+    for (int i = 0; i < numTasks; i++) {
+        if ((currentTime - tasks[i].lastExecuted) >= tasks[i].interval) {
+            printf("Sending reminder for Task %d: %s\n", tasks[i].taskId, tasks[i].taskName);
+            tasks[i].lastExecuted = currentTime;
+        }
+    }
+}
 //Client code subjected to changes
 int main() {
     QUEUE eventQueue;
@@ -116,7 +131,12 @@ int main() {
     
     ListEvents(&eventQueue);
 
-    
+    // Simulating time passage and sending reminders
+    for (int i = 0; i < 30; i++) { // Simulating 30 seconds
+        printf("Current Time: %d seconds\n", currentTime);
+        sendReminders(tasks, 3, currentTime);
+        currentTime++;
+    }
 
     return 0;
 }
